@@ -4,17 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    int mySqrt(int x)
+    static int mySqrt(int x)
     {
-        int sqrt = 0;
+        if (x == 0 || x == 1)
+            return x;
 
-        while (pow(sqrt, 2) > x || pow(sqrt + 1, 2) <= x)
+        double sqrt = x / 2;
+        double x_max = x;
+        double x_min = 0;
+
+        while (pow(int(sqrt), 2) > x || pow(int(sqrt) + 1, 2) <= x)
         {
-            if (pow(sqrt, 2) > x)
-                sqrt = (sqrt + 0) / 2;
+            if (pow(int(sqrt), 2) > x)
+            {
+                x_max = sqrt;
+                sqrt = (sqrt + x_min) * 0.5;
+            }
             else
-                sqrt = (sqrt + x) / 3;
+            {
+                x_min = sqrt;
+                sqrt = (sqrt + x_max) * 0.5;
+            }
         }
-        return sqrt;
+        return int(sqrt);
     }
 };

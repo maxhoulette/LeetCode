@@ -1,34 +1,45 @@
-# Compiler
-CXX := clang++
-CXXFLAGS := -Wall -std=c++17 -Iinclude
+CXX = g++
+CXXFLAGS = -Wall -Wextra -std=c++17 -c
+AR = ar
+ARFLAGS = rcs
 
-# Directories
-SRC_DIR := src
-BUILD_DIR := build
-OBJ_DIR := $(BUILD_DIR)/obj
-BIN := main
+PROJECTS = easy medium hard
 
-# Source and object files
-SRCS := $(wildcard $(SRC_DIR)/*.cc)
-OBJS := $(patsubst $(SRC_DIR)/%.cc, $(OBJ_DIR)/%.o, $(SRCS))
+# Source files are in src/
+easy_SRCS = $(wildcard easy/src/*.cc)
+medium_SRCS = $(wildcard medium/src/*.cc)
+hard_SRCS = $(wildcard hard/src/*.cc)
 
-# Default target
-all: $(BIN)
+# Object files go into build/ with same filenames as sources
+easy_OBJS = $(patsubst easy/src/%.cc, easy/build/%.o, $(easy_SRCS))
+medium_OBJS = $(patsubst medium/src/%.cc, medium/build/%.o, $(medium_SRCS))
+hard_OBJS = $(patsubst hard/src/%.cc, hard/build/%.o, $(hard_SRCS))
 
-# Linking
-$(BIN): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+all: easy/libeasy.a medium/libmedium.a hard/libhard.a
 
-# Compiling
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Create build directories if they don't exist
+$(shell mkdir -p easy/build medium/build hard/build)
 
-# Create object dir
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+# Compile .cc to .o in build/
+easy/build/%.o: easy/src/%.cc
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
-# Clean
+medium/build/%.o: medium/src/%.cc
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+hard/build/%.o: hard/src/%.cc
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+# Archive static libs
+easy/libeasy.a: $(easy_OBJS)
+	$(AR) $(ARFLAGS) $@ $^
+
+medium/libmedium.a: $(medium_OBJS)
+	$(AR) $(ARFLAGS) $@ $^
+
+hard/libhard.a: $(hard_OBJS)
+	$(AR) $(ARFLAGS) $@ $^
+
 clean:
-	rm -rf $(BUILD_DIR) $(BIN)
-
-.PHONY: all clean
+	rm -rf easy/build medium/build hard/build
+	rm -f easy/libeasy.a medium/libmedium.a hard/libhard.a

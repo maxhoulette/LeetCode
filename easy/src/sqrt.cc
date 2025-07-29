@@ -13,7 +13,7 @@ public:
             if (pow(sqrt, 2) > x)
                 sqrt = (sqrt + 0) / 2;
             else
-                sqrt = (sqrt + x) / 2;
+                sqrt = (sqrt + x) / 3;
         }
         return sqrt;
     }

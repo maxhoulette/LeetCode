@@ -27,8 +27,6 @@ public:
         if (n < 0)
             switch_x_n(x, n);
 
-        cout << n << endl;
-
         if (n % 2 == 0)
             return myPow(x * x, n / 2);
         else
